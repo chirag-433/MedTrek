@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MedTrek Remind - Smart Medicine Reminders</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Login Screen -->
+    <div id="login-screen" class="screen active">
+        <div class="login-container">
+            <div class="logo-section">
+                <h1>MedTrek Remind</h1>
+                <p>Smart Medicine Management &amp; Reminders</p>
+                <div class="welcome-graphic">
+                    <img src="https://pplx-res.cloudinary.com/image/upload/v1755159044/pplx_project_search_images/3991c7dcc329e80d2ef7142d02acda021ca752da.png" alt="Medicine reminder app interface" class="inspiration-image">
+                </div>
+            </div>
+            <div class="login-form">
+                <div class="form-tabs">
+                    <button class="tab-btn active" onclick="showTab('login')">Login</button>
+                    <button class="tab-btn" onclick="showTab('signup')">Sign Up</button>
+                </div>
+                <form id="login-form" class="tab-content active">
+                    <div class="form-group">
+                        <label class="form-label" for="login-email">Email</label>
+                        <input type="email" id="login-email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="login-password">Password</label>
+                        <input type="password" id="login-password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Login</button>
+                </form>
+                <form id="signup-form" class="tab-content">
+                    <div class="form-group">
+                        <label class="form-label" for="signup-name">Full Name</label>
+                        <input type="text" id="signup-name" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="signup-email">Email</label>
+                        <input type="email" id="signup-email" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="signup-password">Password</label>
+                        <input type="password" id="signup-password" class="form-control" required>
+                    </div>
+                    <button type="submit" class="btn btn--primary btn--full-width">Create Account</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main App -->
+    <div id="app-screen" class="screen">
+        <!-- Navigation -->
+        <nav class="main-nav">
+            <div class="nav-brand">
+                <h2>MedTrek</h2>
+            </div>
+            <div class="nav-menu">
+                <button class="nav-btn active" data-screen="dashboard">
+                    <span class="nav-icon">📊</span>
+                    Dashboard
+                </button>
+                <button class="nav-btn" data-screen="medicines">
+                    <span class="nav-icon">💊</span>
+                    Medicines
+                </button>
+                <button class="nav-btn" data-screen="history">
+                    <span class="nav-icon">📈</span>
+                    History
+                </button>
+                <button class="nav-btn" data-screen="ai-tips">
+                    <span class="nav-icon">🤖</span>
+                    AI Tips
+                </button>
+                <button class="nav-btn" data-screen="info">
+                    <span class="nav-icon">📚</span>
+                    Info
+                </button>
+            </div>
+            <div class="nav-user">
+                <span id="user-name">Welcome</span>
+                <button class="btn btn--outline btn--sm" onclick="logout()">Logout</button>
+            </div>
+        </nav>
+
+        <!-- Dashboard Screen -->
+        <div id="dashboard" class="app-content active">
+            <div class="container">
+                <div class="dashboard-header">
+                    <h2>Today's Schedule</h2>
+                    <div class="date-info">
+                        <span id="current-date">Monday, October 20, 2025</span>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card adherence-summary">
+                        <div class="card__body">
+                            <h3>Weekly Adherence</h3>
+                            <div class="adherence-stats">
+                                <div class="stat">
+                                    <span class="stat-value" id="adherence-percentage">85%</span>
+                                    <span class="stat-label">This Week</span>
+                                </div>
+                                <div class="stat">
+                                    <span class="stat-value" id="doses-taken">12/14</span>
+                                    <span class="stat-label">Doses Taken</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card quick-actions">
+                        <div class="card__body">
+                            <h3>Quick Actions</h3>
+                            <div class="action-buttons">
+                                <button class="btn btn--primary" onclick="showScreen('medicines')">Add Medicine</button>
+                                <button class="btn btn--secondary" onclick="showScreen('history')">View History</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="reminders-section">
+                    <h3>Upcoming Reminders</h3>
+                    <div id="reminders-list" class="reminders-list">
+                        <!-- Reminders will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <div class="ai-insights">
+                    <h3>AI Insights</h3>
+                    <div class="insight-card">
+                        <div class="insight-content">
+                            <p id="daily-tip">Great job maintaining your schedule this week! Consider setting up medicine near your morning coffee for better routine.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medicines Screen -->
+        <div id="medicines" class="app-content">
+            <div class="container">
+                <div class="medicines-header">
+                    <h2>My Medicines</h2>
+                    <button class="btn btn--primary" onclick="showAddMedicine()">+ Add Medicine</button>
+                </div>
+
+                <div id="medicines-list" class="medicines-grid">
+                    <!-- Medicines will be populated by JavaScript -->
+                </div>
+
+                <!-- Add Medicine Modal -->
+                <div id="add-medicine-modal" class="modal">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3>Add New Medicine</h3>
+                            <button class="modal-close" onclick="hideAddMedicine()">&times;</button>
+                        </div>
+                        <form id="add-medicine-form">
+                            <div class="form-group">
+                                <label class="form-label" for="medicine-name">Medicine Name</label>
+                                <input type="text" id="medicine-name" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="medicine-dosage">Dosage</label>
+                                <input type="text" id="medicine-dosage" class="form-control" placeholder="e.g., 10mg" required>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="medicine-frequency">Frequency</label>
+                                <select id="medicine-frequency" class="form-control" required>
+                                    <option value="">Select frequency</option>
+                                    <option value="once-daily">Once daily</option>
+                                    <option value="twice-daily">Twice daily</option>
+                                    <option value="three-times">Three times daily</option>
+                                    <option value="as-needed">As needed</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="medicine-times">Times</label>
+                                <div id="time-inputs">
+                                    <input type="time" class="form-control time-input" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label" for="medicine-notes">Notes (optional)</label>
+                                <textarea id="medicine-notes" class="form-control" rows="3" placeholder="Take with food, etc."></textarea>
+                            </div>
+                            <div class="modal-actions">
+                                <button type="button" class="btn btn--secondary" onclick="hideAddMedicine()">Cancel</button>
+                                <button type="submit" class="btn btn--primary">Add Medicine</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- History Screen -->
+        <div id="history" class="app-content">
+            <div class="container">
+                <h2>Adherence History</h2>
+                
+                <div class="history-tabs">
+                    <button class="tab-btn active" onclick="showHistoryTab('chart')">Chart View</button>
+                    <button class="tab-btn" onclick="showHistoryTab('list')">List View</button>
+                </div>
+
+                <div id="chart-view" class="history-content active">
+                    <div class="card">
+                        <div class="card__body">
+                            <h3>Weekly Adherence Chart</h3>
+                            <div class="chart-container">
+                                <canvas id="adherence-chart" height="300"></canvas>
+                            </div>
+                            <div class="chart-reference">
+                                <img src="https://ppl-ai-code-interpreter-files.s3.amazonaws.com/web/direct-files/0b7f03b0d74e36b41e222626c3272732/44b6396f-47b7-44a0-b836-4edb56c259d0/042df237.png" alt="Sample weekly medicine adherence chart" class="reference-chart">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="list-view" class="history-content">
+                    <div class="history-filters">
+                        <select class="form-control" onchange="filterHistory(this.value)">
+                            <option value="all">All medicines</option>
+                            <option value="taken">Taken doses</option>
+                            <option value="missed">Missed doses</option>
+                            <option value="late">Late doses</option>
+                        </select>
+                    </div>
+                    <div id="history-list" class="history-entries">
+                        <!-- History entries will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Tips Screen -->
+        <div id="ai-tips" class="app-content">
+            <div class="container">
+                <h2>AI Health Tips &amp; Insights</h2>
+                
+                <div class="ai-inspiration">
+                    <img src="https://pplx-res.cloudinary.com/image/upload/v1757568370/pplx_project_search_images/88066c2d8993766987b66ce1a1e4ec630391b42.png" alt="AI wellness app interface" class="ai-interface-inspiration">
+                </div>
+
+                <div class="tips-grid">
+                    <div class="card tip-card">
+                        <div class="card__body">
+                            <h3>📈 Adherence Insights</h3>
+                            <p id="adherence-insight">Based on your patterns, you tend to miss evening doses. Try setting a dinner reminder!</p>
+                            <div class="tip-actions">
+                                <button class="btn btn--outline btn--sm" onclick="generateNewTip('adherence')">New Tip</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card tip-card">
+                        <div class="card__body">
+                            <h3>💡 Smart Reminders</h3>
+                            <p id="reminder-tip">Consider taking your morning medication with breakfast for better absorption and routine building.</p>
+                            <div class="tip-actions">
+                                <button class="btn btn--outline btn--sm" onclick="generateNewTip('reminder')">New Tip</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card tip-card">
+                        <div class="card__body">
+                            <h3>🎯 Personal Goals</h3>
+                            <p id="goal-tip">You're 5% away from your 90% adherence goal this month. Keep up the great work!</p>
+                            <div class="tip-actions">
+                                <button class="btn btn--outline btn--sm" onclick="generateNewTip('goal')">New Tip</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card tip-card">
+                        <div class="card__body">
+                            <h3>⚕️ Health Tips</h3>
+                            <p id="health-tip">Did you know? Taking medications at consistent times can improve their effectiveness by up to 20%.</p>
+                            <div class="tip-actions">
+                                <button class="btn btn--outline btn--sm" onclick="generateNewTip('health')">New Tip</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Screen -->
+        <div id="info" class="app-content">
+            <div class="container">
+                <h2>Information &amp; Resources</h2>
+                
+                <div class="info-sections">
+                    <div class="card info-section">
+                        <div class="card__body">
+                            <h3>📋 Frequently Asked Questions</h3>
+                            <div class="faq-list">
+                                <div class="faq-item">
+                                    <button class="faq-question" onclick="toggleFAQ(this)">How do I add a new medicine? <span>+</span></button>
+                                    <div class="faq-answer">
+                                        <p>Go to the Medicines tab and click "Add Medicine". Fill in the medicine details including name, dosage, frequency, and timing.</p>
+                                    </div>
+                                </div>
+                                <div class="faq-item">
+                                    <button class="faq-question" onclick="toggleFAQ(this)">Can I snooze reminders? <span>+</span></button>
+                                    <div class="faq-answer">
+                                        <p>Yes! When you receive a reminder, you can snooze it for 5, 10, or 15 minutes using the snooze options.</p>
+                                    </div>
+                                </div>
+                                <div class="faq-item">
+                                    <button class="faq-question" onclick="toggleFAQ(this)">Is my data secure? <span>+</span></button>
+                                    <div class="faq-answer">
+                                        <p>Absolutely! All your health data stays on your device and is never transmitted to external servers.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card info-section">
+                        <div class="card__body">
+                            <h3>💊 Medicine Information</h3>
+                            <p>Always consult with your healthcare provider for medical advice. This app is for reminder purposes only.</p>
+                            <div class="info-links">
+                                <a href="https://www.fda.gov/drugs" target="_blank" class="btn btn--outline">FDA Drug Information</a>
+                                <a href="https://www.mayoclinic.org/drugs-supplements" target="_blank" class="btn btn--outline">Mayo Clinic Drug Guide</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card info-section">
+                        <div class="card__body">
+                            <h3>📈 Adherence Tips</h3>
+                            <ul class="tip-list">
+                                <li>Take medicines at the same time each day</li>
+                                <li>Use pill organizers for weekly planning</li>
+                                <li>Link medication times to daily routines</li>
+                                <li>Keep medicines visible as visual reminders</li>
+                                <li>Set up family support systems</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="card info-section">
+                        <div class="card__body">
+                            <h3>🔬 Latest Research</h3>
+                            <p>Stay informed about medication adherence research and health news from trusted sources.</p>
+                            <div class="info-links">
+                                <a href="https://www.nih.gov" target="_blank" class="btn btn--outline">NIH Research</a>
+                                <a href="https://www.cdc.gov" target="_blank" class="btn btn--outline">CDC Health Info</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
